@@ -1,11 +1,7 @@
 package me.pie.routes
 
-import io.ktor.http.*
 import io.ktor.server.application.*
-import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.encodeToString
 import me.pie.Domain
 import me.pie.models.Doc
 import me.pie.models.Tag
@@ -23,7 +19,6 @@ fun Route.searchRouting() {
         get("{query?}{page?}") {
             val query = call.parameters["query"] ?: return@get call.missing("query")
             val page = Utils.ensureIntKey(call.parameters, "page", 1)
-
 
             val client = OkHttpClient()
 

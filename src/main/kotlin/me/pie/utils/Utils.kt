@@ -1,8 +1,13 @@
 package me.pie.utils
 
 import io.ktor.http.*
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.Response
 import org.jsoup.nodes.Element
 import java.text.SimpleDateFormat
+import java.util.logging.ConsoleHandler
+import java.util.logging.Logger
 
 object Utils {
     val HEADERS = mapOf(
@@ -11,8 +16,19 @@ object Utils {
         "Connection" to "keep-alive",
     )
 
+    val logger: Logger = Logger.getLogger("kyokyoko")
+
     val dmyDate = SimpleDateFormat("dd/MM/yy")
     val hmdmyDate = SimpleDateFormat("hh:mm - dd/MM/yy")
+    val lastReload = MSTimer()
+
+    init {
+        val handler = ConsoleHandler()
+        handler.formatter = LogFormatter()
+        logger.handlers.forEach { logger.removeHandler(it) }
+        logger.addHandler(handler)
+        logger.useParentHandlers = false
+    }
 
     fun ensureIntKey(parameters: Parameters, key: String, default: Int = 1): Int {
         return try {
@@ -38,5 +54,10 @@ object Utils {
             }
         }
         return 0
+    }
+
+    fun quickRequest(url: String, func: (t: Response) -> Unit) {
+        val request = Request.Builder().url(url).defaultHeaders().build()
+        OkHttpClient().newCall(request).execute().use(func)
     }
 }

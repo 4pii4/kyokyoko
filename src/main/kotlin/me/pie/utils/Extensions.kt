@@ -14,7 +14,7 @@ fun Request.Builder.addHeaders(headers: Map<String, String>): Request.Builder {
 
 fun Request.Builder.defaultHeaders() = this.addHeaders(Utils.HEADERS)
 
-suspend inline fun <reified T>ApplicationCall.respondJson(value: T) {
+suspend inline fun <reified T> ApplicationCall.respondJson(value: T) {
     this.respondText(Json.encodeToString(value), contentType = ContentType.Application.Json)
 }
 
